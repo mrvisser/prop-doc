@@ -6,7 +6,7 @@ package ca.mrvisser.propdoc;
 import java.io.File;
 import java.io.IOException;
 
-import ca.mrvisser.propdoc.parser.JavaPropertyFileParser;
+import ca.mrvisser.propdoc.parser.JavaPropertyFileTokenizer;
 import ca.mrvisser.propdoc.parser.Token;
 import ca.mrvisser.propdoc.parser.TokenEnumeration;
 
@@ -22,11 +22,11 @@ public class PropDocMain {
 	public static void main(String[] args) throws IOException {
 		System.out.println("Loading...");
 		File file = new File("C:\\Temp\\test.properties");
-		JavaPropertyFileParser parser = new JavaPropertyFileParser(file);
-		TokenEnumeration tokens = parser.parseTokens();
+		JavaPropertyFileTokenizer parser = new JavaPropertyFileTokenizer(file);
+		TokenEnumeration tokens = parser.tokenize();
 		while (tokens.hasMoreElements()) {
 			Token token = tokens.nextElement();
-			
+			System.out.println(token.getClass().toString()+": "+token.getText());
 		}
 		System.out.println("Done.");
 	}

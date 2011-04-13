@@ -3,22 +3,20 @@
  */
 package ca.mrvisser.propdoc.parser.tokens;
 
-import ca.mrvisser.propdoc.parser.Token;
-
 /**
  * @author bvisser
  *
  */
-public class CommentToken implements Token {
+public class CommentToken extends BaseToken {
 
 	private String content;
 	
-	public CommentToken(String content) {
+	public CommentToken(String text, String content) {
+		super(text);
 		this.content = content;
 	}
 
 	public String getContent() {
 		return content;
 	}
-	
 }

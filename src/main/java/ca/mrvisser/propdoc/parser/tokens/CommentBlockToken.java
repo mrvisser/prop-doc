@@ -8,9 +8,7 @@ package ca.mrvisser.propdoc.parser.tokens;
  *
  */
 public class CommentBlockToken extends CommentToken {
-
-	public CommentBlockToken(String content) {
-		super(content);
+	public CommentBlockToken(String text, String content) {
+		super(text, content);
 	}
-
 }

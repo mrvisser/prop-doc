@@ -3,12 +3,13 @@
  */
 package ca.mrvisser.propdoc.parser.tokens;
 
-import ca.mrvisser.propdoc.parser.Token;
-
 /**
  * @author bvisser
  *
  */
-public class EndOfFileToken implements Token {
-
+public class EndOfFileToken extends BaseToken {
+	
+	public EndOfFileToken(String text) {
+		super(text);
+	}
 }

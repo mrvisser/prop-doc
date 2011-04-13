@@ -11,8 +11,8 @@ public class CommentAttributeToken extends CommentToken {
 
 	private String name;
 	
-	public CommentAttributeToken(String name, String content) {
-		super(content);
+	public CommentAttributeToken(String text, String name, String content) {
+		super(text, content);
 		this.name = name;
 	}
 

@@ -3,28 +3,20 @@
  */
 package ca.mrvisser.propdoc.parser.tokens;
 
-import ca.mrvisser.propdoc.parser.Token;
-
 /**
  * @author bvisser
  *
  */
-public class PropertyDefinitionToken implements Token {
-
-	private String
-		name,
-		value;
+public class PropertyDefinitionToken extends BaseToken {
 	
-	public PropertyDefinitionToken(String name, String value) {
-		this.name = name;
-		this.value = value;
+	private String key;
+	
+	public PropertyDefinitionToken(String text, String key) {
+		super(text);
+		this.key = key;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getValue() {
-		return value;
+	
+	public String getKey() {
+		return key;
 	}
 }

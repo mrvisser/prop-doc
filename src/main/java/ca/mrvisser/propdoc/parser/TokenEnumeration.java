@@ -4,6 +4,7 @@
 package ca.mrvisser.propdoc.parser;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import ca.mrvisser.propdoc.parser.tokens.EndOfFileToken;
@@ -11,7 +12,7 @@ import ca.mrvisser.propdoc.parser.tokens.EndOfFileToken;
 /**
  * @author bvisser
  */
-public final class TokenEnumeration implements Enumeration<Token> {
+public final class TokenEnumeration implements Enumeration<Token>, Iterable<Token> {
 
 	private final TokenFactory tokenFactory = TokenFactory.getInstance();
 	private int currentLineIndex = 0;
@@ -65,4 +66,33 @@ public final class TokenEnumeration implements Enumeration<Token> {
 		}
 	}
 
+	@Override
+	public Iterator<Token> iterator() {
+		return new EnumerationIterator(this);
+	}
+	
+	private class EnumerationIterator implements Iterator<Token> {
+
+		private Enumeration<Token> e;
+		
+		public EnumerationIterator(Enumeration<Token> e) {
+			this.e = e;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return e.hasMoreElements();
+		}
+
+		@Override
+		public Token next() {
+			return e.nextElement();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+	}
 }

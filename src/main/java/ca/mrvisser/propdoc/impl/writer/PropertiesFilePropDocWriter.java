@@ -1,8 +1,23 @@
 /**
- * 
+ * Copyright (c) 2011, Branden Visser (mrvisser at gmail dot com)
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package ca.mrvisser.propdoc.api;
+package ca.mrvisser.propdoc.impl.writer;
 
+import ca.mrvisser.propdoc.api.PropDoc;
+import ca.mrvisser.propdoc.api.PropDocWriter;
+import ca.mrvisser.propdoc.api.Property;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -21,7 +36,8 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 		FMT_COMMENT_ATTRIBUTE = "# @%s %s\n",
 		FMT_COMMENT_BLOCK = "##\n",
 		FMT_PROPERTY_DEF = "%s=%s\n",
-		FMT_EMPTY_LINE = "\n";
+		FMT_EMPTY_LINE = "\n",
+		FMT_WORD = " %s";
 	private static String CHARSET = "ISO-8859-1";
 	
 	private int commentWidth = DEFAULT_COMMENT_WIDTH;
@@ -41,21 +57,38 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 		Set<String> allAttributes = propDoc.getAllAttributes();
 		for (Property property : propDoc.getProperties().values()) {
 			writeEmptyLine(out);
-			Map<String, String> attributes = property.getMetadata();
-			if (attributes != null && attributes.size() > 0) {
+			
+			//first output all the meta-data for the property in a comment block above the property
+			Set<String> attributeKeys = property.getMetadataKeys();
+			if (attributeKeys != null && !attributeKeys.isEmpty()) {
+				
+				//starts the comment block
 				writeCommentBlock(out);
+				
+				//write the property key as the documentation property with a new comment line after
 				writeCommentAttribute(out, Property.ATTR_PROPERTY_KEY, property.getKey());
 				writeComment(out);
+				
+				//write all other "user-defined" documentation properties
 				for (String name : allAttributes) {
-					String val = attributes.get(name);
+					String val = property.getMetadataValue(name);
 					if (val != null) {
+						/*
+						 * Basically, we're going to assume the comment content is a plain-text paragraph, which
+						 * is bad form if there is HTML comment formatting.
+						 */
+						
 						//clean the string up. We don't need no stinkin' new lines either
 						val = val.replaceAll("\\s+", " ");
 						String[] words = val.split("\\s");
 						int
 							w = 0, //index for the word array
 							l = 0; //what line number we're on
-							
+						
+						/*
+						 * we split the text up into "words", we have to output like this to support sane
+						 * wrapping to avoid overflowing the commentWidth.
+						 */
 						while (w < words.length) {
 							StringBuilder currentLine = new StringBuilder(words[w]);
 							int lineSize = words[w].length();
@@ -63,17 +96,19 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 							
 							//not to get technical, but there is some comment pre-amble on each line..
 							if (l == 1 && !name.equals(Property.ATTR_DEFAULT_KEY)) {
+								//include the actual meta-data key (e.g., @description) if this is the first line
 								lineSize += 3 + name.length();
 							} else {
 								lineSize += 2;
 							}
 							
+							//find how much of the comment we can actually output on this comment line
 							while (w < words.length) {
 								lineSize += words[w].length()+1;
 								if (lineSize > commentWidth)
 									break;
 								
-								currentLine.append(" "+words[w]);
+								currentLine.append(String.format(FMT_WORD, words[w]));
 								w++;
 							}
 							

@@ -1,10 +1,20 @@
 /**
- * 
+ * Copyright (c) 2011, Branden Visser (mrvisser at gmail dot com)
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 package ca.mrvisser.propdoc.api;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
@@ -19,42 +29,54 @@ import ca.mrvisser.propdoc.parser.JavaPropertyFileTokenizer;
 import ca.mrvisser.propdoc.parser.Token;
 import ca.mrvisser.propdoc.parser.TokenEnumeration;
 import ca.mrvisser.propdoc.parser.tokens.*;
+import java.io.ByteArrayInputStream;
+import org.apache.commons.io.IOUtils;
 
 /**
+ * A model that represents a java properties file and its associated meta-data documentation. When
+ * instantiated, this object immediately parses the provided input stream as a Java Properties file.
+ * When complete, the java properties, values and their associated PropDoc meta-data may be
+ * accessed.
+ * 
  * @author Branden
- *
  */
 public class PropDoc {
 
 	private Map<String, Property> properties = new TreeMap<String, Property>();
 	private Set<String> allAttributes = new TreeSet<String>(new Comparator<String>() {
+		@Override
 		public int compare(String one, String other) {
 			return (new Property(one, null, null)).compareTo(new Property(other, null, null));
 		}
 	});
-	private Set<Property> droppedProperties = new TreeSet<Property>();
 	
-	public PropDoc(File file) throws IOException {
-		seedProperties(file);
-		parseMetadata(file);
+	public PropDoc(InputStream in) throws IOException {
+		byte[] fileContent = IOUtils.toByteArray(in);
+		
+		//first seed all the java properties and values using the java properties parser
+		seedProperties(new ByteArrayInputStream(fileContent));
+		
+		//collect the meta-data documentation for each property
+		parseMetadata(new ByteArrayInputStream(fileContent));
 	}
 	
+	/**
+	 * @return The properties file properties (and meta-data) keyed by the property key.
+	 */
 	public Map<String, Property> getProperties() {
 		return properties;
 	}
 
+	/**
+	 * @return A set of all the meta-data attributes that were discovered when parsing the java
+	 * properties file
+	 */
 	public Set<String> getAllAttributes() {
 		return allAttributes;
 	}
 
-	public Set<Property> getDroppedProperties() {
-		return droppedProperties;
-	}
-
-	private void parseMetadata(File file) throws IOException {
-		JavaPropertyFileTokenizer tokenizer = new JavaPropertyFileTokenizer(file);
-		TokenEnumeration tokens = tokenizer.tokenize();
-		
+	private void parseMetadata(InputStream in) throws IOException {
+		TokenEnumeration tokens = JavaPropertyFileTokenizer.tokenize(in);
 		//poor man's state machine..
 		while (tokens.hasMoreElements()) {
 			Token token = tokens.nextElement();
@@ -135,25 +157,30 @@ public class PropDoc {
 				
 				//apply this comment block to the property metadata
 				if (propertyName != null) {
+					String value = null;
 					if (properties.containsKey(propertyName)) {
-						properties.get(propertyName).setMetadata(attributeMap);
-						allAttributes.addAll(attributeMap.keySet());
+						value = properties.get(propertyName).getValue();
 					} else {
-						/*
-						 * if we've just gathered metadata for a property that *Java* did not parse from the file, then possible 2 things
-						 * have gone wrong: Either there was an @property attribute that referenced a property that didn't exist, or the
-						 * parser mis-parsed. For either case, we store these in a special place.
-						 */
-						droppedProperties.add(new Property(propertyName, null, attributeMap));
+						//in this situation, there was a documented property in the property file that doesn't
+						//actually have a property-value declaration. we'll just store the property with a null
+						//value.
 					}
+
+					properties.put(propertyName, new Property(propertyName, value, attributeMap));
+					allAttributes.addAll(attributeMap.keySet());
 				}
 			}
-			
 		}
 	}
 	
-	private void seedProperties(File file) throws IOException {
-		InputStream in = new FileInputStream(file);
+	/**
+	 * Use the Java properties parser to parse the properties file and seed all properties / values
+	 * without the meta-data.
+	 * 
+	 * @param file The java properties file
+	 * @throws IOException Thrown if there is an issue reading the properties file.
+	 */
+	private void seedProperties(InputStream in) throws IOException {
 		Properties allProperties = new Properties();
 		try {
 			allProperties.load(in);
@@ -162,8 +189,10 @@ public class PropDoc {
 		}
 		
 		for (Map.Entry<Object, Object> entry : allProperties.entrySet()) {
-			Property property = new Property(entry.getKey().toString(), entry.getValue().toString(), new HashMap<String, String>());
-			properties.put(entry.getKey().toString(), property);
+			String key = entry.getKey().toString();
+			String value = entry.getValue().toString();
+			Property property = new Property(key, value, null);
+			properties.put(key, property);
 		}
 	}
 }

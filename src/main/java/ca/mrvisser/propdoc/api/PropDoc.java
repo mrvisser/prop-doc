@@ -50,6 +50,10 @@ public class PropDoc {
 		}
 	});
 	
+	public PropDoc() {
+		//empty constructor for manually building a prop-doc model
+	}
+	
 	public PropDoc(InputStream in) throws IOException {
 		byte[] fileContent = IOUtils.toByteArray(in);
 		

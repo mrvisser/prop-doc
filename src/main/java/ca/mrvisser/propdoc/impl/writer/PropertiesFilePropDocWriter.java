@@ -15,13 +15,13 @@
  */
 package ca.mrvisser.propdoc.impl.writer;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Set;
+
 import ca.mrvisser.propdoc.api.PropDoc;
 import ca.mrvisser.propdoc.api.PropDocWriter;
 import ca.mrvisser.propdoc.api.Property;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Write a PropDoc model out to a Java Properties file. Warning: No support for Unicode.
@@ -30,17 +30,20 @@ import java.util.Set;
  */
 public class PropertiesFilePropDocWriter implements PropDocWriter {
 
-	private static int DEFAULT_COMMENT_WIDTH = 100;
-	private static String
+	private static final int DEFAULT_COMMENT_WIDTH = 100;
+	private static final boolean DEFAULT_OUTPUT_PROPERTY_META_VALUE = false;
+	private static final String
 		FMT_COMMENT = "# %s\n",
 		FMT_COMMENT_ATTRIBUTE = "# @%s %s\n",
 		FMT_COMMENT_BLOCK = "##\n",
 		FMT_PROPERTY_DEF = "%s=%s\n",
 		FMT_EMPTY_LINE = "\n",
 		FMT_WORD = " %s";
-	private static String CHARSET = "ISO-8859-1";
+	private static final String CHARSET = "ISO-8859-1";
 	
 	private int commentWidth = DEFAULT_COMMENT_WIDTH;
+	
+	private boolean outputPropertyMetaValue = DEFAULT_OUTPUT_PROPERTY_META_VALUE;
 	
 	public PropertiesFilePropDocWriter() {
 	}
@@ -54,8 +57,7 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 	 */
 	@Override
 	public void write(PropDoc propDoc, OutputStream out) throws IOException {
-		Set<String> allAttributes = propDoc.getAllAttributes();
-		for (Property property : propDoc.getProperties().values()) {
+		for (Property property : propDoc) {
 			writeEmptyLine(out);
 			
 			//first output all the meta-data for the property in a comment block above the property
@@ -66,13 +68,16 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 				writeCommentBlock(out);
 				
 				//write the property key as the documentation property with a new comment line after
-				writeCommentAttribute(out, Property.ATTR_PROPERTY_KEY, property.getKey());
-				writeComment(out);
+				
+				if (outputPropertyMetaValue) {
+					writeCommentAttribute(out, Property.ATTR_PROPERTY_KEY, property.getKey());
+					writeComment(out);
+				}
 				
 				//write all other "user-defined" documentation properties
-				for (String name : allAttributes) {
+				for (String name : attributeKeys) {
 					String val = property.getMetadataValue(name);
-					if (val != null) {
+					if (val != null && !val.isEmpty()) {
 						/*
 						 * Basically, we're going to assume the comment content is a plain-text paragraph, which
 						 * is bad form if there is HTML comment formatting.

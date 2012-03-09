@@ -4,3 +4,5 @@ bin
 .settings
 .metadata
 target
+nb-configuration.xml
+nbactions.xml

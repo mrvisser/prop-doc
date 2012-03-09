@@ -17,19 +17,17 @@ package ca.mrvisser.propdoc.api;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import ca.mrvisser.propdoc.parser.JavaPropertyFileTokenizer;
 import ca.mrvisser.propdoc.parser.Token;
 import ca.mrvisser.propdoc.parser.TokenEnumeration;
 import ca.mrvisser.propdoc.parser.tokens.*;
 import java.io.ByteArrayInputStream;
+import java.util.Iterator;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -40,15 +38,9 @@ import org.apache.commons.io.IOUtils;
  * 
  * @author Branden
  */
-public class PropDoc {
+public class PropDoc implements Iterable<Property> {
 
 	private Map<String, Property> properties = new TreeMap<String, Property>();
-	private Set<String> allAttributes = new TreeSet<String>(new Comparator<String>() {
-		@Override
-		public int compare(String one, String other) {
-			return (new Property(one, null, null)).compareTo(new Property(other, null, null));
-		}
-	});
 	
 	public PropDoc() {
 		//empty constructor for manually building a prop-doc model
@@ -64,21 +56,10 @@ public class PropDoc {
 		parseMetadata(new ByteArrayInputStream(fileContent));
 	}
 	
-	/**
-	 * @return The properties file properties (and meta-data) keyed by the property key.
-	 */
 	public Map<String, Property> getProperties() {
 		return properties;
 	}
-
-	/**
-	 * @return A set of all the meta-data attributes that were discovered when parsing the java
-	 * properties file
-	 */
-	public Set<String> getAllAttributes() {
-		return allAttributes;
-	}
-
+	
 	private void parseMetadata(InputStream in) throws IOException {
 		TokenEnumeration tokens = JavaPropertyFileTokenizer.tokenize(in);
 		//poor man's state machine..
@@ -171,10 +152,14 @@ public class PropDoc {
 					}
 
 					properties.put(propertyName, new Property(propertyName, value, attributeMap));
-					allAttributes.addAll(attributeMap.keySet());
 				}
 			}
 		}
+	}
+	
+	@Override
+	public Iterator<Property> iterator() {
+		return properties.values().iterator();
 	}
 	
 	/**

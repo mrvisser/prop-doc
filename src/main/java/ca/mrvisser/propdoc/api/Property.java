@@ -59,6 +59,10 @@ public class Property implements Comparable<Property> {
 		return value;
 	}
 
+	Map<String, String> getMetadata() {
+		return metadata;
+	}
+	
 	public Set<String> getMetadataKeys() {
 		return new HashSet<String>(metadata.keySet());
 	}

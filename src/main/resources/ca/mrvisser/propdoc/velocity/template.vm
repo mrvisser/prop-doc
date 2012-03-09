@@ -1,0 +1,48 @@
+#set ($attrKeys = $propDoc.getAllAttributes())
+#set ($propKeys = $propDoc.getProperties().keySet())
+#set ($metaDescriptionKey = "description")
+
+<html>
+	<head>
+		<title>PropDoc</title>
+	</head>
+	<body>
+		<h1>Properties</h1>
+		<table>
+
+			<!-- HEADER -->
+			<thead>
+				<th>Property</th>
+				<th>Description</th>
+
+				#foreach ($attrKey in $attrKeys)
+					#if ($attrKey != $metaDescriptionKey)
+						<th>$attrKey</th>
+					#end
+				#end
+			</thead>
+			<!-- END HEADER -->
+
+
+			<!-- BODY -->
+			<tbody>
+
+				#foreach ($propKey in $propKeys)
+					#set ($prop = $propDoc.getProperties().get($propKey))
+
+					<tr>
+						<td>$prop.getKey()</td>
+						<td>$!prop.getMetadataValue($metaDescriptionKey)</td>
+
+						#foreach ($attrKey in $attrKeys)
+							#if ($attrKey != $metaDescriptionKey)
+								<td>$!prop.getMetadataValue($attrKey)</td>
+							#end
+						#end
+					</tr>
+				#end
+			</tbody>
+			<!-- END BODY -->
+		</table>
+	</body>
+</html>

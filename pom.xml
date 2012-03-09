@@ -21,6 +21,12 @@
 			<version>2.1</version>
 		</dependency>
 		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.5</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
@@ -41,5 +47,13 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<testResources>
+			<testResource>
+				<directory>src/main/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
 	</build>
 </project>

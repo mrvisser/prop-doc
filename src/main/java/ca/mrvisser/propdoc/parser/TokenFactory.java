@@ -38,7 +38,7 @@ public class TokenFactory {
 	
 	private final static Pattern
 			COMMENT_BLOCK_PATTERN = Pattern.compile("^[\\s]*##([\\w\\W]*)$"),
-			COMMENT_ATTRIBUTE_PATTERN = Pattern.compile("^[\\s]*#[\\s]*@([\\w]+)[\\s]+([\\w\\W]*)$"),
+			COMMENT_ATTRIBUTE_PATTERN = Pattern.compile("^[\\s]*#[\\s]*@([\\w-]+)[\\s]+([\\w\\W]*)$"),
 			COMMENT_PATTERN = Pattern.compile("^[\\s]*#([\\w\\W]*)$"),
 			PROPERTY_DEFINITION_PATTERN = Pattern.compile("^[\\s]*([\\w_\\.]+)=[\\w\\W]*$"),
 			EMPTY_LINE_PATTERN = Pattern.compile("^[\\s]*$");

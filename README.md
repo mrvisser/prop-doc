@@ -74,12 +74,12 @@ When you run the following maven command in the root of the source tree:
 It should generate you a JAR file in the **target/** directory similar to **prop-doc-current-jar-with-dependencies.jar**. This jar is executable, defaulting to the Velocity template propdoc executor:
 
 <pre>
-~/prop-doc$ java -jar target/prop-doc-current-jar-with-dependencies.jar
+~/prop-doc$ java -jar target/prop-doc-1.0-jar-with-dependencies.jar
 Usage: java \
 	-Dpropdoc.output.path=&lt;output propdoc file-system path&gt; \
 	-Dproperties.file.url=&lt;source properties file URL&gt; (e.g., file://C:\Temp\config.properties; e.g., classpath:org/my/config/config.properties)\
 	[-Dvelocity.template.url=&lt;velocity template url&gt; (e.g., file://C:\Temp\propdoc.vm; default: classpath:ca/mrvisser/propdoc/velocity/template.html.vm)]\
-	-jar &lt;prop-doc-current-jar-with-dependencies&gt;.jar
+	-jar &lt;prop-doc-1.0-jar-with-dependencies&gt;.jar
 </pre>
 
 **propdoc.output.path:** The destination for the velocity template output

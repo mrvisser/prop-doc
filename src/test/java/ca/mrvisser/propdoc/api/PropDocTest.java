@@ -44,6 +44,7 @@ public class PropDocTest {
 		assertEquals("3.17.1", property.getMetadataValue("introduced"));
 		assertEquals("hidden,optional,mandatory", property.getMetadataValue("values"));
 		assertEquals("mandatory", property.getMetadataValue("default"));
+		assertEquals("the-value", property.getMetadataValue("test-dashes"));
 		
 		property = properties.get("profile.form.middle_name");
 		assertNull(property.getValue());

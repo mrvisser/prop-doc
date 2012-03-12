@@ -60,6 +60,7 @@ public class JavaPropertyFileTokenizerTest {
 			new CommentAttributeToken(" #@name\t\tcontent", "name", "content"),
 			new CommentAttributeToken("#\t\t@name content", "name", "content"),
 			new CommentBlockToken("## @name content", " @name content"),
+			new CommentAttributeToken("#@test-dashes a value", "test-dashes", "a value"),
 			new PropertyDefinitionToken("property.key=property.value", "property.key"),
 			new PropertyDefinitionToken("property.key=property.value=property-#@value", "property.key"),
 			new EndOfFileToken("")

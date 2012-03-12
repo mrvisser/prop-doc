@@ -1,23 +1,24 @@
-#set ($attrKeys = $propDoc.getAllAttributes())
+#set ($attrKeys = $allAttributes)
 #set ($propKeys = $propDoc.getProperties().keySet())
 #set ($metaDescriptionKey = "description")
 
 <html>
 	<head>
 		<title>PropDoc</title>
+		<link rel="stylesheet" type="text/css" href="styles/core.css" />
 	</head>
 	<body>
 		<h1>Properties</h1>
-		<table>
+		<table id="propdoc">
 
 			<!-- HEADER -->
 			<thead>
-				<th>Property</th>
-				<th>Description</th>
+				<th class="property">Property</th>
+				<th class="description">Description</th>
 
 				#foreach ($attrKey in $attrKeys)
 					#if ($attrKey != $metaDescriptionKey)
-						<th>$attrKey</th>
+						<th class="$attrKey">$attrKey</th>
 					#end
 				#end
 			</thead>
@@ -31,12 +32,12 @@
 					#set ($prop = $propDoc.getProperties().get($propKey))
 
 					<tr>
-						<td>$prop.getKey()</td>
-						<td>$!prop.getMetadataValue($metaDescriptionKey)</td>
+						<td class="property">$prop.getKey()</td>
+						<td class="description">$!prop.getMetadataValue($metaDescriptionKey)</td>
 
 						#foreach ($attrKey in $attrKeys)
 							#if ($attrKey != $metaDescriptionKey)
-								<td>$!prop.getMetadataValue($attrKey)</td>
+								<td class="$attrKey">$!prop.getMetadataValue($attrKey)</td>
 							#end
 						#end
 					</tr>
@@ -44,5 +45,7 @@
 			</tbody>
 			<!-- END BODY -->
 		</table>
+		
+		<script type="text/javascript" src="scripts/core.js"> </script>
 	</body>
 </html>

@@ -17,7 +17,11 @@ package ca.mrvisser.propdoc.impl.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 import ca.mrvisser.propdoc.api.PropDoc;
 import ca.mrvisser.propdoc.api.PropDocWriter;
@@ -40,6 +44,26 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 		FMT_EMPTY_LINE = "\n",
 		FMT_WORD = " %s";
 	private static final String CHARSET = "ISO-8859-1";
+	private static final Comparator<String> ATTR_COMPARATOR = new Comparator<String>() {
+			@Override
+			public int compare(String one, String other) {
+				if (StringUtils.equals(one, other))
+					return 0;
+				if (Property.ATTR_DEFAULT_KEY.equals(one))
+					return -1;
+				if (Property.ATTR_DEFAULT_KEY.equals(other))
+					return 1;
+				if (Property.ATTR_PROPERTY_KEY.equals(one))
+					return -1;
+				if (Property.ATTR_PROPERTY_KEY.equals(other))
+					return 1;
+				if (one == null)
+					return -1;
+				if (other == null)
+					return 1;
+				return one.compareTo(other);
+			}
+		};
 	
 	private int commentWidth = DEFAULT_COMMENT_WIDTH;
 	
@@ -60,15 +84,17 @@ public class PropertiesFilePropDocWriter implements PropDocWriter {
 		for (Property property : propDoc) {
 			writeEmptyLine(out);
 			
+			
+			SortedSet<String> attributeKeys = new TreeSet<String>(ATTR_COMPARATOR);
+			attributeKeys.addAll(property.getMetadataKeys());
+			
 			//first output all the meta-data for the property in a comment block above the property
-			Set<String> attributeKeys = property.getMetadataKeys();
 			if (attributeKeys != null && !attributeKeys.isEmpty()) {
 				
 				//starts the comment block
 				writeCommentBlock(out);
 				
 				//write the property key as the documentation property with a new comment line after
-				
 				if (outputPropertyMetaValue) {
 					writeCommentAttribute(out, Property.ATTR_PROPERTY_KEY, property.getKey());
 					writeComment(out);

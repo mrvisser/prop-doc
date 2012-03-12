@@ -76,10 +76,10 @@ It should generate you a JAR file in the **target/** directory similar to **prop
 <pre>
 ~/prop-doc$ java -jar target/prop-doc-current-jar-with-dependencies.jar
 Usage: java \
-	-Dpropdoc.output.path=<output propdoc file-system path> \
-	-Dproperties.file.url=<source properties file URL> (e.g., file://C:\Temp\config.properties; e.g., classpath:org/my/config/config.properties)\
-	[-Dvelocity.template.url=<velocity template url> (e.g., file://C:\Temp\propdoc.vm; default: classpath:ca/mrvisser/propdoc/velocity/template.html.vm)]\
-	-jar jar-file-name.jar
+	-Dpropdoc.output.path=&lt;output propdoc file-system path&gt; \
+	-Dproperties.file.url=&lt;source properties file URL&gt; (e.g., file://C:\Temp\config.properties; e.g., classpath:org/my/config/config.properties)\
+	[-Dvelocity.template.url=&lt;velocity template url&gt; (e.g., file://C:\Temp\propdoc.vm; default: classpath:ca/mrvisser/propdoc/velocity/template.html.vm)]\
+	-jar &lt;prop-doc-current-jar-with-dependencies&gt;.jar
 </pre>
 
 **propdoc.output.path:** The destination for the velocity template output

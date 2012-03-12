@@ -71,7 +71,7 @@ When you run the following maven command in the root of the source tree:
 ~/prop-doc$ mvn assembly:single
 </pre>
 
-It should generate you a JAR file in the **target/** directory similar to **prop-doc-current-jar-with-dependencies.jar**. This jar is executable, defaulting to the Velocity template propdoc executor:
+It should generate you a JAR file in the **target/** directory similar to **prop-doc-1.0-jar-with-dependencies.jar**. This jar is executable, defaulting to the Velocity template propdoc executor:
 
 <pre>
 ~/prop-doc$ java -jar target/prop-doc-1.0-jar-with-dependencies.jar

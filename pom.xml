@@ -6,7 +6,7 @@
 
 	<groupId>ca.mrvisser</groupId>
 	<artifactId>prop-doc</artifactId>
-	<version>current</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -55,14 +55,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>

@@ -65,7 +65,7 @@ This program using the properties file example above would output:
 
 ### Using the velocity processor
 
-When you run the following maven command in the root of the source tree:
+The Velocity processor allows you to use a velocity template to generate documentation about your properties file. When you run the following maven command in the root of the source tree:
 
 <pre>
 ~/prop-doc$ mvn assembly:single

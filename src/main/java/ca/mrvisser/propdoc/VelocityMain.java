@@ -13,7 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package ca.mrvisser.propdoc.api;
+package ca.mrvisser.propdoc;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import ca.mrvisser.propdoc.api.PropDoc;
+import ca.mrvisser.propdoc.api.PropDocWriter;
 import ca.mrvisser.propdoc.impl.writer.VelocityPropDocWriterImpl;
 import ca.mrvisser.propdoc.util.ResourceUtil;
 
@@ -72,9 +74,10 @@ public final class VelocityMain {
 	}
 
 	public static final void printUsage() {
-		System.out.printf("Usage: VelocityMain \\\n\t-D%s=<output propdoc file-system path> " +
+		System.out.printf("Usage: java \\\n\t-D%s=<output propdoc file-system path> " +
 				"\\\n\t-D%s=<source properties file URL> (e.g., file://C:\\Temp\\config.properties; e.g., classpath:org/my/config/config.properties)" +
-				"\\\n\t [-D%s=<velocity template url> (e.g., file://C:\\Temp\\propdoc.vm; default: %s)]", PROPDOC_OUTPUT_PATH_PROPERTY, PROPERTIES_FILE_URL_PROPERTY,
+				"\\\n\t [-D%s=<velocity template url> (e.g., file://C:\\Temp\\propdoc.vm; default: %s)]\\\n" +
+				"\t-jar <propdoc executable>.jar\n", PROPDOC_OUTPUT_PATH_PROPERTY, PROPERTIES_FILE_URL_PROPERTY,
 				VELOCITY_TEMPLATE_PATH_PROPERTY, DEFAULT_TEMPLATE_PATH);
 	}
 	
